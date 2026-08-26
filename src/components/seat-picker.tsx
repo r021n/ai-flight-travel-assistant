@@ -83,8 +83,65 @@ export function SeatPicker({
               </div>
             ))}
           </div>
-          <div className="flex flex-col gap-1"></div>
+          <div className="flex flex-col gap-1">
+            {Array.from({ length: 30 }, (_, i) => i + 1).map((row) => (
+              <div key={row} className="flex items-center gap-1">
+                <span className="w-6 text-center text-xs font-medium text-muted-foreground">
+                  {row}
+                </span>
+                {columns.map((col) => {
+                  const seat = seats.find(
+                    (s) => s.row === row && s.column === col,
+                  );
+
+                  if (!seat) return null;
+                  return (
+                    <button
+                      key={seat.id}
+                      onClick={() => handleSeatClick(seat)}
+                      disabled={!seat.available}
+                      data-testid={`seat-${seat.id}`}
+                      className={cn(
+                        "w-8 h-8 rounded text-xs font-medium transition-colors",
+                        !seat.available &&
+                          "bg-muted text-muted-foreground cursor-not-allowed",
+                        seat.available &&
+                          selectedSeat?.id !== seat.id &&
+                          "bg-green-500 text-white hover:bg-green-600",
+                        selectedSeat?.id === seat.id &&
+                          "bg-primary text-primary-foreground",
+                      )}
+                    >
+                      {seat.id}
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
         </div>
+        {selectedSeat && (
+          <div className="mt-4 p-3 bg-muted rounded-lg">
+            <p className="text-sm font-medium">
+              Kursi dipilih: {selectedSeat.id}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {selectedSeat.type === "window"
+                ? "Jendela"
+                : selectedSeat.type === "aisle"
+                  ? "Lorong"
+                  : "Tengah"}
+            </p>
+          </div>
+        )}
+        <Button
+          className="w-full mt-4"
+          disabled={!selectedSeat}
+          onClick={handleConfirm}
+          data-testid="confirm-seat-btn"
+        >
+          Lanjut Bayar
+        </Button>
       </CardContent>
     </Card>
   );
