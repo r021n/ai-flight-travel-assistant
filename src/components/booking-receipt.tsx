@@ -62,6 +62,58 @@ export function BookingReceipt({ receipt }: BookingReceiptProps) {
               {receipt.flight.origin} → {receipt.flight.destination}
             </span>
           </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Waktu</span>
+            <span className="font-medium">
+              {receipt.flight.departureTime} - {receipt.flight.arrivalTime}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Durasi</span>
+            <span className="font-medium">{receipt.flight.duration}</span>
+          </div>
+          <Separator />
+
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Penumpang</span>
+            <span className="font-medium">{receipt.passangerName}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Kursi</span>
+            <span className="font-medium">{receipt.seat.id}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Tipe Kursi</span>
+            <span className="font-medium">
+              {receipt.seat.type === "window"
+                ? "Jendela"
+                : receipt.seat.type === "aisle"
+                  ? "Lorong"
+                  : "Tengah"}
+            </span>
+          </div>
+          <Separator />
+
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">
+              Metode Pembayaran
+            </span>
+            <span className="font-medium">{receipt.paymentMethod}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">
+              Tanggal Pemesanan
+            </span>
+            <span className="font-medium">{receipt.bookingDate}</span>
+          </div>
+          <Separator />
+
+          <div className="flex items-center justify-between">
+            <span className="text-lg font-bold">Total</span>
+            <span className="text-lg font-bold text-primary">
+              {formatPrice(receipt.totalPrice)}
+            </span>
+          </div>
         </div>
       </CardContent>
     </Card>
