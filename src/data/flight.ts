@@ -109,3 +109,45 @@ export function searchFlightsData({
     return matchOrigin && matchDest && matchPrice;
   });
 }
+
+export function getFlightById(flightId: string): Flight | undefined {
+  const normId = flightId.toLowerCase().trim();
+  return MOCK_FLIGHTS.find(
+    (f) =>
+      f.id.toLowerCase() === normId || f.flightNumber.toLowerCase() === normId,
+  );
+}
+
+export function generateSeatsForFlight(flightId: string): Seat[] {
+  const seats: Seat[] = [];
+  const columns = ["A", "B", "C", "D", "E", "F"];
+  const unavailableRows = [3, 7, 12, 18];
+
+  for (let row = 1; row <= 10; row++) {
+    for (const col of columns) {
+      const isUnavailable =
+        unavailableRows.includes(row) && (col === "A" || col === "C");
+      seats.push({
+        id: `${row}${col}`,
+        row,
+        column: col,
+        available: !isUnavailable,
+        type:
+          col === "A" || col === "F"
+            ? "window"
+            : col === "C" || col === "D"
+              ? "aisle"
+              : "middle",
+      });
+    }
+  }
+
+  return seats;
+}
+
+export interface CreateBookingParams {
+  flightId: string;
+  seatId: string;
+  passengerName: string;
+  paymentMethod?: string;
+}
