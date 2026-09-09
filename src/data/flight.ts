@@ -151,3 +151,38 @@ export interface CreateBookingParams {
   passengerName: string;
   paymentMethod?: string;
 }
+
+export function createBooking({
+  flightId,
+  seatId,
+  passengerName,
+  paymentMethod = "QRIS / Instant Bank Transfer",
+}: CreateBookingParams): BookingReceipt | null {
+  const flight = getFlightById(flightId);
+  if (!flight) return null;
+
+  const seats = generateSeatsForFlight(flightId);
+  const seat = seats.find(
+    (s) => s.id.toUpperCase() === seatId.toUpperCase(),
+  ) || {
+    id: seatId.toUpperCase(),
+    row: parseInt(seatId, 10) || 1,
+    column: seatId.slice(-1).toUpperCase() || "A",
+    available: true,
+    type: "window" as const,
+  };
+
+  const bookingId = `BK-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 900 + 100)}`;
+  const bookingDate = new Date().toISOString().split("T")[0];
+
+  return {
+    bookingId,
+    flight,
+    seat,
+    passangerName: passengerName,
+    totalPrice: flight.price,
+    status: "SUCCESS",
+    paymentMethod,
+    bookingDate,
+  };
+}
