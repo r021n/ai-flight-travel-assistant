@@ -70,4 +70,41 @@ describe("Phase 2 - Zod Schemas Validation", () => {
       expect(result.success).toBe(false);
     });
   });
+
+  describe("bookFlightSchema", () => {
+    it("harus memvalidasi data booking yang lengkap dan valid", () => {
+      const input = {
+        flightId: "GA-401",
+        seatId: "12A",
+        passengerName: "Budi Pratama",
+      };
+      const result = bookFlightSchema.safeParse(input);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.flightId).toBe("GA-401");
+        expect(result.data.seatId).toBe("12A");
+        expect(result.data.passengerName).toBe("Budi Pratama");
+      }
+    });
+
+    it("harus gagal jika passangerName kurang dari 2 karakter", () => {
+      const input = {
+        flightId: "GA-401",
+        seatId: "12A",
+        passengerName: "A",
+      };
+      const result = bookFlightSchema.safeParse(input);
+      expect(result.success).toBe(false);
+    });
+
+    it("harus gagal jika seatId tidak valid / terlalu pendek", () => {
+      const input = {
+        flightId: "GA-401",
+        seatId: "A",
+        passengerName: "Budi Pratama",
+      };
+      const result = bookFlightSchema.safeParse(input);
+      expect(result.success).toBe(false);
+    });
+  });
 });
