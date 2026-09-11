@@ -106,4 +106,56 @@ describe("Phase 2 - AI Tools Execution", () => {
       expect(result.error).toContain("tidak ditemukan");
     });
   });
+
+  describe("bookFlightTool", () => {
+    it("harus berhasil memuat tiket booking receipt saat parameter valid", async () => {
+      if (!bookFlightTool.execute) {
+        throw new Error("bookFlightTool.execute tidak terdefinisi");
+      }
+
+      const result = (await bookFlightTool.execute(
+        {
+          flightId: "GA-401",
+          seatId: "12A",
+          passengerName: "Budi Pratama",
+        },
+        defaultToolsOptions,
+      )) as {
+        success: boolean;
+        booking: {
+          bookingId: string;
+          flight: Flight;
+          seat: { id: string };
+          passangerName: string;
+          totalPrice: number;
+          status: string;
+        };
+      };
+
+      expect(result.success).toBe(true);
+      expect(result.booking.flight.id).toBe("GA-401");
+      expect(result.booking.seat.id).toBe("12A");
+      expect(result.booking.passangerName).toBe("Budi Pratama");
+      expect(result.booking.status).toBe("SUCCESS");
+      expect(result.booking.bookingId).toBeDefined();
+      expect(result.booking.totalPrice).toBe(result.booking.flight.price);
+    });
+
+    it("harus mengembalikan error jika flightId tidak valid saat pemesanan", async () => {
+      if (!bookFlightTool.execute) {
+        throw new Error("bookFlightTool.execute tidak terdefinisi");
+      }
+
+      const result = bookFlightTool.execute(
+        {
+          flightId: "UNKNOWN-FLIGHT",
+          seatId: "12A",
+          passengerName: "Budi Pratama",
+        },
+        defaultToolsOptions,
+      ) as { success: boolean; error: string };
+
+      expect(result.success).toBe(false);
+    });
+  });
 });
