@@ -32,5 +32,78 @@ describe("Phase 2 - AI Tools Execution", () => {
         expect(flight.destination.toLowerCase()).toContain("bali");
       });
     });
+
+    it("harus mengembalikan semua opsi penerbangan jika maxPrice tidak diberikan", async () => {
+      if (!searchFlightsTool.execute) {
+        throw new Error("searchFlightTool.execute tidak terdefinisi");
+      }
+
+      const result = (await searchFlightsTool.execute(
+        {
+          origin: "Jakarta",
+          destination: "Bali",
+        },
+        defaultToolsOptions,
+      )) as { success: boolean; flights: Flight[] };
+
+      expect(result.success).toBe(true);
+      expect(result.flights.length).toBeGreaterThanOrEqual(4);
+    });
+
+    it("harus mengembalikan array kosong dengan success=true jika rute tidak ditemukan", async () => {
+      if (!searchFlightsTool.execute) {
+        throw new Error("searchFlightsTool.execute tidak terdefinisi");
+      }
+
+      const result = (await searchFlightsTool.execute(
+        {
+          origin: "Medan",
+          destination: "Papua",
+        },
+        defaultToolsOptions,
+      )) as { success: boolean; flights: Flight[] };
+
+      expect(result.success).toBe(true);
+      expect(result.flights.length).toBe(0);
+    });
+  });
+
+  describe("selectFlightTool", () => {
+    it("harus mengembalikan detail flight dan daftar kursi saat flightId valid", async () => {
+      if (!selectFlightTool.execute) {
+        throw new Error("selectFlightTool.execute tidak terlalu terdefinisi");
+      }
+
+      const result = (await selectFlightTool.execute(
+        {
+          flightId: "GA-401",
+        },
+        defaultToolsOptions,
+      )) as { success: boolean; flight: Flight; seats: unknown[] };
+
+      expect(result.success).toBe(true);
+      expect(result.flight.id).toBe("GA-401");
+      expect(result.flight.airline).toBe("Garuda Indonesia");
+      expect(result.seats.length).toBeGreaterThan(0);
+      expect(result.seats[0]).toHaveProperty("id");
+      expect(result.seats[0]).toHaveProperty("available");
+      expect(result.seats[0]).toHaveProperty("type");
+    });
+
+    it("harus mengembalikan error jika flightId tidak terdaftar", async () => {
+      if (!selectFlightTool.execute) {
+        throw new Error("selectFlightTool.execute tidak terdefinisi");
+      }
+
+      const result = (await selectFlightTool.execute(
+        {
+          flightId: "INVALID-999",
+        },
+        defaultToolsOptions,
+      )) as { success: boolean; error: string };
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain("tidak ditemukan");
+    });
   });
 });
