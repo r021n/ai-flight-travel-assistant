@@ -71,4 +71,42 @@ describe("Phase 2 - API Route /api/chat Integration Test", () => {
       "GOOGLE_GENERATIVE_AI_API_KEY belum dikonfigurasi",
     );
   });
+
+  it("harus memanggil streamText dengan model gemma-4-31b-it dan tools yang sesuai", async () => {
+    process.env.GOOGLE_GENERATIVE_AI_API_KEY = "dummy-google-api-key";
+
+    const streamText = await import("ai");
+    const { google } = await import("@ai-sdk/google");
+
+    const messages = [
+      {
+        role: "user",
+        content:
+          "Cari penerbangan dari Jakarta ke Bali besok pagi, budget di bawah 1.5 juta",
+      },
+    ];
+
+    const request = new Request("http://localhost:3000/api/chat", {
+      method: "POST",
+      body: JSON.stringify({ messages }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+
+    expect(google).toHaveBeenCalledWith("gemma-4-31b-it");
+
+    expect(streamText).toHaveBeenCalledWith(
+      expect.objectContaining({
+        messages,
+        stopWhen: "isStepCount(5)",
+        tools: expect.objectContaining({
+          searchFlights: expect.any(Object),
+          selectFlight: expect.any(Object),
+          bookFlight: expect.any(Object),
+        }),
+      }),
+    );
+  });
 });
