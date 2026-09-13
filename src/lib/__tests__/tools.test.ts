@@ -146,14 +146,14 @@ describe("Phase 2 - AI Tools Execution", () => {
         throw new Error("bookFlightTool.execute tidak terdefinisi");
       }
 
-      const result = bookFlightTool.execute(
+      const result = (await bookFlightTool.execute(
         {
           flightId: "UNKNOWN-FLIGHT",
           seatId: "12A",
           passengerName: "Budi Pratama",
         },
         defaultToolsOptions,
-      ) as { success: boolean; error: string };
+      )) as { success: boolean; error: string };
 
       expect(result.success).toBe(false);
     });

@@ -75,7 +75,7 @@ describe("Phase 2 - API Route /api/chat Integration Test", () => {
   it("harus memanggil streamText dengan model gemma-4-31b-it dan tools yang sesuai", async () => {
     process.env.GOOGLE_GENERATIVE_AI_API_KEY = "dummy-google-api-key";
 
-    const streamText = await import("ai");
+    const { streamText } = await import("ai");
     const { google } = await import("@ai-sdk/google");
 
     const messages = [
