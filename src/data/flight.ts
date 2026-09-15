@@ -118,7 +118,8 @@ export function getFlightById(flightId: string): Flight | undefined {
   );
 }
 
-export function generateSeatsForFlight(flightId: string): Seat[] {
+export function generateSeatsForFlight(flightId?: string): Seat[] {
+  void flightId;
   const seats: Seat[] = [];
   const columns = ["A", "B", "C", "D", "E", "F"];
   const unavailableRows = [3, 7, 12, 18];

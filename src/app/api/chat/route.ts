@@ -1,5 +1,10 @@
 import { google } from "@ai-sdk/google";
-import { streamText, isStepCount } from "ai";
+import {
+  streamText,
+  isStepCount,
+  createUIMessageStreamResponse,
+  toUIMessageStream,
+} from "ai";
 import { travelTools } from "@/lib/tools";
 
 export const maxDuration = 30;
@@ -43,7 +48,9 @@ Selalu berikan respon yang sopan, jelas, dan membantu dalam bahasa Indonesia.`,
       stopWhen: isStepCount(5),
     });
 
-    return result.toUIMessageStreamResponse();
+    return createUIMessageStreamResponse({
+      stream: toUIMessageStream({ stream: result.stream }),
+    });
   } catch (error) {
     console.error("Error pada /api/chat:", error);
     return new Response(

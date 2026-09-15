@@ -81,3 +81,33 @@ export function SeatPickerSkeleton() {
     </Card>
   );
 }
+
+export function BookingReceiptSkeleton() {
+  return (
+    <Card
+      className="w-full animate-pulse border-dashed"
+      data-testid="receipt-skeleton"
+    >
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-6 w-40" />
+          <Skeleton className="h-5 w-24 rounded-full" />
+        </div>
+        <Skeleton className="h-4 w-32 mt-1" />
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="flex items-center justify-between">
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-4 w-36" />
+          </div>
+        ))}
+        <Separator className="my-2" />
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-6 w-20" />
+          <Skeleton className="h-6 w-32" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
