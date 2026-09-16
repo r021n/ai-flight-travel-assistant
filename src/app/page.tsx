@@ -83,4 +83,44 @@ export default function Home() {
       text: `Saya memilih kursi nomor ${seat.id} untuk penumpang ${passengerName}. Tolong proses reservasi dan terbitkan bukti pembayarannya.`,
     });
   };
+
+  const handleDirectServerActionBooking = async (
+    flightId = "GA-401",
+    seatId = "12A",
+  ) => {
+    try {
+      setIsProcessingAction(true);
+      const res = await processBookingAction({
+        flightId,
+        seatId,
+        passengerName,
+        paymentMethod: "QRIS / Instant Bank Transfer",
+      });
+
+      if (res.success && res.booking) {
+        setServerActionResult(res.booking);
+      } else {
+        alert(res.error || "Gagal memproses transaksi via Server Action.");
+      }
+    } catch (error) {
+      alert("Terjadi kesalahan saat memanggil Server Action: " + String(error));
+    } finally {
+      setIsProcessingAction(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans">
+      {/* Header App */}
+      <header className="sticky top-0 z-20 border-b bg-background/95 backdrop-blur px-4 py-3 sm:px-8">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-sm">
+              <Plane className="h-5 w-5" />
+            </div>
+          </div>
+        </div>
+      </header>
+    </div>
+  );
 }
