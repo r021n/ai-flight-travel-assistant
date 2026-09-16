@@ -41,7 +41,7 @@ const SUGGESTED_PROMPTS = [
 ];
 
 export default function Home() {
-  const [Input, setInput] = useState();
+  const [input, setInput] = useState("");
   const [passengerName, setPassengerName] = useState("Budi Santoso");
   const [serverActionResult, setServerActionResult] =
     useState<BookingReceiptType | null>(null);
@@ -59,4 +59,28 @@ export default function Home() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading, serverActionResult]);
+
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+    sendMessage({ text: input });
+    setInput("");
+  };
+
+  const handlePromptClick = (promptText: string) => {
+    if (isLoading) return;
+    sendMessage({ text: promptText });
+  };
+
+  const handleSelectFlight = (flight: Flight) => {
+    sendMessage({
+      text: `Saya memilih penerbangan ${flight.airline} (${flight.flightNumber}) dari ${flight.origin} ke ${flight.destination}. Mohon tampilkan denah kursi pesawat untuk penerbangan ini.`,
+    });
+  };
+
+  const handleSelectSeat = async (seat: Seat) => {
+    sendMessage({
+      text: `Saya memilih kursi nomor ${seat.id} untuk penumpang ${passengerName}. Tolong proses reservasi dan terbitkan bukti pembayarannya.`,
+    });
+  };
 }
