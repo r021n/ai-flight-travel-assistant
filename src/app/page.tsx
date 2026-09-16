@@ -118,6 +118,46 @@ export default function Home() {
             <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-sm">
               <Plane className="h-5 w-5" />
             </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-base font-bold sm:text-lg">
+                  AI Flight & Travel Assistant
+                </h1>
+                <Badge variant="secondary" className="text-xs">
+                  Phase 3 GenUI
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <Sparkles className="h-3 w-3 text-amber-500" />
+                Model: Gemma 4 (<code>gemma-4-31b-it</code>)
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-2 bg-muted/60 px-3 py-1.5 rounded-lg border text-xs">
+              <UserCheck className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="text-muted-foreground">Penumpang:</span>
+              <span className="font-semibold text-foreground">
+                {passengerName}
+              </span>
+            </div>
+
+            {messages.length > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setMessages([]);
+                  setServerActionResult(null);
+                }}
+                className="text-xs gap-1.5"
+                title="Reset percakapan"
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Reset Chat</span>
+              </Button>
+            )}
           </div>
         </div>
       </header>
