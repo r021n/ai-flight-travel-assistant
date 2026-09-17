@@ -253,6 +253,57 @@ export default function Home() {
                         </div>
                       );
                     }
+
+                    if (part.type === "tool-searchFlights") {
+                      const callId = part.toolCallId || `search-${index}`;
+
+                      if (
+                        part.state === "input-streaming" ||
+                        part.state === "input-available"
+                      ) {
+                        return (
+                          <div key={callId} className="w-full space-y-2">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground animate-pulse">
+                              <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                              <span>Mencari jadwal penerbangan terbaik...</span>
+                            </div>
+                            <FlightCardSkeleton />
+                          </div>
+                        );
+                      }
+
+                      if (part.state === "output-available") {
+                        const flights =
+                          (part.output as { flights?: Flight[] })?.flights ||
+                          [];
+
+                        return (
+                          <div key={callId} className="w-full">
+                            <FlightListCard
+                              flights={flights}
+                              onSelectFlight={handleSelectFlight}
+                            />
+                          </div>
+                        );
+                      }
+
+                      if (part.state === "output-error") {
+                        return (
+                          <Card
+                            key={callId}
+                            className="w-full border-destructive/50 bg-destructive/5"
+                          >
+                            <CardContent className="p-4 text-xs text-destructive flex items-center gap-2">
+                              <AlertCircle className="h-4 w-4 shrink-0" />
+                              <span>
+                                Gagal memuat penerbangan:{" "}
+                                {part.errorText || "Terjadi kesalahan"}
+                              </span>
+                            </CardContent>
+                          </Card>
+                        );
+                      }
+                    }
                   })}
                 </div>
               </div>
