@@ -200,8 +200,65 @@ export default function Home() {
             </div>
 
             {/* Tombol Saran Prompt */}
+            <div className="mt-6 w-full max-w-lg space-y-2">
+              <p className="text-xs font-medium text-muted-foreground text-center">
+                Coba tanyakan langsung:
+              </p>
+              <div className="flex flex-col gap-2">
+                {SUGGESTED_PROMPTS.map((promptText, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handlePromptClick(promptText)}
+                    className="text-left text-xs sm:text-sm p-3 rounded-lg border bg-card hover:bg-muted/80 transition-colors shadow-xs flex items-center justify-between group"
+                    data-testid={`prompt-chip-${idx}`}
+                  >
+                    <span>{promptText}</span>
+                    <Send className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
+
+        {/* Daftar Obrolan */}
+        <div className="space-y-6 flex-1">
+          {messages.map((message) => {
+            const isUser = message.role === "user";
+
+            return (
+              <div
+                key={message.id}
+                className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}
+                data-testid={`message-${message.role}`}
+              >
+                {!isUser && (
+                  <div className="h-8 w-8 rounded-full bg-primary/10 border flex items-center justify-center text-primary shrink-0 mt-0.5">
+                    <Bot className="h-4 w-4" />
+                  </div>
+                )}
+
+                <div
+                  className={`flex flex-col space-y-3 max-w-[85%] sm:max-w-2xl ${isUser ? "items-end" : "items-start"}`}
+                >
+                  {message.parts.map((part, index) => {
+                    if (part.type === "text") {
+                      if (!part.text.trim()) return null;
+                      return (
+                        <div
+                          key={index}
+                          className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${isUser ? "bg-primary text-primary-foreground rounded-br-xs " : "bg-card border text-card-foreground shadow-xs rounded-bl-xs"}`}
+                        >
+                          <p className="whitespace-pre-wrap">{part.text}</p>
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </main>
     </div>
   );
