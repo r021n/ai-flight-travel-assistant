@@ -161,6 +161,48 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* Area Chat */}
+      <main className="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col space-y-4">
+        {/* Tampilan Chat Saat Kosong */}
+        {messages.length === 0 && !serverActionResult && (
+          <div className="flex flex-col items-center justify-center my-auto py-12 text-center">
+            <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-4">
+              <Plane className="h-7 w-7" />
+            </div>
+            <h2 className="text-2xl font-bold tracking-tight">
+              Selamat Datang di AI Travel Assistant
+            </h2>
+            <p className="text-sm text-muted-foreground max-w-md mt-2">
+              Asisten pintar pemesanan tiket pesawat interaktif berbasis{" "}
+              <strong>Generative UI</strong>. Cari penerbangan, pilih kursi
+              favorit, dan terbitkan e-tiket langsung di dalam obrolan.
+            </p>
+
+            {/* Konfigurasi Nama Penumpang */}
+            <div className="mt-6 w-full max-w-md bg-card border rounded-xl p-4 shadow-sm text-left">
+              <label
+                htmlFor="passenger-name-input"
+                className="text-xs font-semibold text-muted-foreground block mb-1.5"
+              >
+                Konfigurasi Nama Penumpang untuk Pemesanan:
+              </label>
+              <div className="flex gap-2">
+                <Input
+                  id="passenger-name-input"
+                  value={passengerName}
+                  onChange={(e) => setPassengerName(e.target.value)}
+                  placeholder="Masukkan nama penumpang..."
+                  className="text-sm"
+                  data-testid="passenger-name-input"
+                />
+              </div>
+            </div>
+
+            {/* Tombol Saran Prompt */}
+          </div>
+        )}
+      </main>
     </div>
   );
 }
