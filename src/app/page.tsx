@@ -304,6 +304,46 @@ export default function Home() {
                         );
                       }
                     }
+
+                    if (part.type === "tool-selectFlight") {
+                      const callId = part.toolCallId || `select-${index}`;
+
+                      if (
+                        part.state === "input-streaming" ||
+                        part.state === "input-available"
+                      ) {
+                        return (
+                          <div key={callId} className="w-full space-y-2">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground animate-pulse">
+                              <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                              <span>Menyiapkan denah kursi kabin...</span>
+                            </div>
+                            <SeatPickerSkeleton />
+                          </div>
+                        );
+                      }
+
+                      if (part.state === "output-available") {
+                        const out = part.output as {
+                          flight?: Flight;
+                          seats?: Seat[];
+                        };
+                        const flightId =
+                          out?.flight?.id ||
+                          (part.input as { flightId?: string })?.flightId ||
+                          "GA-401";
+
+                        return (
+                          <div key={callId} className="w-full">
+                            <SeatPicker
+                              flightId={flightId}
+                              seats={out?.seats}
+                              onSelectSeat={handleSelectSeat}
+                            />
+                          </div>
+                        );
+                      }
+                    }
                   })}
                 </div>
               </div>
