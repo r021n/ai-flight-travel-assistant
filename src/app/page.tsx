@@ -343,9 +343,86 @@ export default function Home() {
                           </div>
                         );
                       }
+
+                      if (part.state === "output-error") {
+                        return (
+                          <Card
+                            key={callId}
+                            className="w-full border-destructive/50 bg-destructive/5"
+                          >
+                            <CardContent className="p-4 text-xs text-destructive flex items-center gap-2">
+                              <AlertCircle className="h-4 w-4 shrink-0" />
+                              <span>
+                                Gagal menampilkan denah kursi:{" "}
+                                {part.errorText || "Terjadi Kesalahan"}
+                              </span>
+                            </CardContent>
+                          </Card>
+                        );
+                      }
                     }
+
+                    if (part.type === "tool-bookFlight") {
+                      const callId = part.toolCallId || `book-${index}`;
+
+                      if (
+                        part.state === "input-streaming" ||
+                        part.state === "input-available"
+                      ) {
+                        return (
+                          <div key={callId} className="w-full space-y-2">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground animate-pulse">
+                              <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                              <span>
+                                Memproses reservasi tiket dan menerbitkan
+                                e-tiket...
+                              </span>
+                            </div>
+                            <BookingReceiptSkeleton />
+                          </div>
+                        );
+                      }
+
+                      if (part.state === "output-available") {
+                        const booking = (
+                          part.output as { booking?: BookingReceiptType }
+                        )?.booking;
+                        if (!booking) return null;
+
+                        return (
+                          <div key={callId} className="w-full">
+                            <BookingReceipt receipt={booking} />
+                          </div>
+                        );
+                      }
+
+                      if (part.state === "output-error") {
+                        return (
+                          <Card
+                            key={callId}
+                            className="w-full border-destructive/50 bg-destructive/5"
+                          >
+                            <CardContent className="p-4 text-xs text-destructive flex items-center gap-2">
+                              <AlertCircle className="h-4 w-4 shrink-0" />
+                              <span>
+                                Gagal memproses tiket:{" "}
+                                {part.errorText || "Terjadi kesalahan"}
+                              </span>
+                            </CardContent>
+                          </Card>
+                        );
+                      }
+                    }
+
+                    return null;
                   })}
                 </div>
+
+                {isUser && (
+                  <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground shrink-0 mt-0.5">
+                    <User className="h-4 w-4" />
+                  </div>
+                )}
               </div>
             );
           })}
