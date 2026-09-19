@@ -426,8 +426,100 @@ export default function Home() {
               </div>
             );
           })}
+
+          {/* Tampilan Direct Server Action */}
+          {serverActionResult && (
+            <div
+              className="space-y-2 pt-2 border-t border-dashed"
+              data-testid="server-action-result-container"
+            >
+              <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 className="h-4 w-4" />
+                <span>
+                  Transaksi Dikonfirmasi melalui Next.js Server Action
+                  (processBookingAction)
+                </span>
+              </div>
+              <BookingReceipt receipt={serverActionResult} />
+            </div>
+          )}
+
+          {/* Indikator AI Berpikir */}
+          {isLoading && (
+            <div className="flex gap-3 items-center text-muted-foreground text-xs animate-pulse pl-1">
+              <Bot className="h-4 w-4 text-primary" />
+              <span>AI sedang memproses respon...</span>
+            </div>
+          )}
+
+          {/* Banner Error */}
+          {error && (
+            <Card className="border-destructive bg-destructive/10">
+              <CardContent className="p-4 flex items-start gap-3 text-destructive text-sm">
+                <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="font-semibold">
+                    Terjadi kendala pada streaming AI
+                  </p>
+                  <p className="text-xs opacity-90">
+                    {error.message ||
+                      "Pastikan API Key GOOGLE_GENERATIVE_AI_API_KEY telah diisi di .env.local"}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <div ref={messagesEndRef} />
         </div>
       </main>
+
+      {/* Input Bar */}
+      <footer className="sticky bottom-0 z-20 border-b bg-background/95 backdrop-blur p-4 sm:px-8">
+        <div className="max-w-4xl mx-auto space-y-2">
+          <form
+            onSubmit={handleSubmit}
+            className="flex gap-2"
+            data-testid="chat-form"
+          >
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ketik permintaan penerbangan Anda (misal: Cari tiket Jakarta ke Bali besok)..."
+              disabled={isLoading}
+              className="flex-1 text-sm h-11"
+              data-testid="chat-input"
+            />
+            <Button
+              type="submit"
+              disabled={isLoading || !input.trim()}
+              className="h-11 px-5 gap-2"
+              data-testid="send-btn"
+            >
+              <Send className="h-4 w-4" />
+              <span className="hidden sm:inline">Kirim</span>
+            </Button>
+          </form>
+
+          {/* Helper Pengujian Server Action */}
+          <div className="flex items-center justify-between text-[11px] text-muted-foreground px-1">
+            <span>
+              Klik tombol <em>&quot;Pilih Penerbangan&quot;</em> atau nomor
+              kursi untuk memicu handshake interaktif otomatis
+            </span>
+            <button
+              type="button"
+              onClick={() => handleDirectServerActionBooking("GA-401", "12A")}
+              disabled={isProcessingAction}
+              className="text-primary hover:underline flex items-center gap-1 shrink-0 ml-2"
+              data-testid="test-server-action-btn"
+            >
+              <CreditCard className="h-3 w-3" />
+              <span>Simulasi Server Action Bayar GA-401 (12A)</span>
+            </button>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
