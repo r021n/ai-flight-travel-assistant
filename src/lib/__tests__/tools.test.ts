@@ -126,7 +126,7 @@ describe("Phase 2 - AI Tools Execution", () => {
           bookingId: string;
           flight: Flight;
           seat: { id: string };
-          passangerName: string;
+          passengerName: string;
           totalPrice: number;
           status: string;
         };
@@ -135,7 +135,7 @@ describe("Phase 2 - AI Tools Execution", () => {
       expect(result.success).toBe(true);
       expect(result.booking.flight.id).toBe("GA-401");
       expect(result.booking.seat.id).toBe("12A");
-      expect(result.booking.passangerName).toBe("Budi Pratama");
+      expect(result.booking.passengerName).toBe("Budi Pratama");
       expect(result.booking.status).toBe("SUCCESS");
       expect(result.booking.bookingId).toBeDefined();
       expect(result.booking.totalPrice).toBe(result.booking.flight.price);

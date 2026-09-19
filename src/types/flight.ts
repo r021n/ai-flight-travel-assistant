@@ -23,7 +23,7 @@ export interface BookingReceipt {
   bookingId: string;
   flight: Flight;
   seat: Seat;
-  passangerName: string;
+  passengerName: string;
   totalPrice: number;
   status: "SUCCESS" | "PENDING" | "FAILED";
   paymentMethod: string;

@@ -87,7 +87,7 @@ describe("Phase 2 - Zod Schemas Validation", () => {
       }
     });
 
-    it("harus gagal jika passangerName kurang dari 2 karakter", () => {
+    it("harus gagal jika passengerName kurang dari 2 karakter", () => {
       const input = {
         flightId: "GA-401",
         seatId: "12A",

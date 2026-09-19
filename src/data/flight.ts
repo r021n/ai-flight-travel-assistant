@@ -180,7 +180,7 @@ export function createBooking({
     bookingId,
     flight,
     seat,
-    passangerName: passengerName,
+    passengerName: passengerName,
     totalPrice: flight.price,
     status: "SUCCESS",
     paymentMethod,

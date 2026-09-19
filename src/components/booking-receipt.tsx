@@ -76,7 +76,7 @@ export function BookingReceipt({ receipt }: BookingReceiptProps) {
 
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Penumpang</span>
-            <span className="font-medium">{receipt.passangerName}</span>
+            <span className="font-medium">{receipt.passengerName}</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Kursi</span>
