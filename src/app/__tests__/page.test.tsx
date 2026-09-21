@@ -46,4 +46,122 @@ describe("Phase 3 - Home Page (Generative UI Chat Interface)", () => {
     expect(screen.getByTestId("prompt-chip-0")).toBeInTheDocument();
     expect(screen.getByTestId("chat-input")).toBeInTheDocument();
   });
+
+  it("harus memanggil sendMessage saat prompt chip diklik", () => {
+    render(<Home />);
+
+    const chip = screen.getByTestId("prompt-chip-0");
+    fireEvent.click(chip);
+
+    expect(mockSendMessage).toHaveBeenCalledTimes(1);
+    expect(mockSendMessage).toHaveBeenCalledWith({
+      text: expect.stringContaining("Jakarta ke Bali"),
+    });
+  });
+
+  it("harus merender teks pesan percakapan user dan assistant", () => {
+    mockMessages = [
+      {
+        id: "msg-1",
+        role: "user",
+        parts: [{ type: "text", text: "Halo AI!" }],
+      },
+      {
+        id: "msg-2",
+        role: "assistant",
+        parts: [{ type: "text", text: "Halo! Ada yang bisa saya bantu?" }],
+      },
+    ];
+
+    render(<Home />);
+
+    expect(screen.getByText("Halo AI!")).toBeInTheDocument();
+    expect(
+      screen.getByText("Halo! Ada yang bisa saya bantu?"),
+    ).toBeInTheDocument();
+  });
+
+  it("harus merender FlightCardSkeleton saat tombol searchFlights berstatus input-streaming", () => {
+    mockMessages = [
+      {
+        id: "msg-1",
+        role: "assistant",
+        parts: [
+          {
+            type: "tool-searchFlights",
+            toolCallId: "call-1",
+            state: "input-streaming",
+            input: { origin: "Jakarta", destination: "Bali" },
+          },
+        ],
+      },
+    ];
+
+    render(<Home />);
+
+    expect(screen.getByTestId("flight-skeleton")).toBeInTheDocument();
+    expect(
+      screen.getByText("/Mencari jadwal penerbangan terbaik/i"),
+    ).toBeInTheDocument();
+  });
+
+  it("harus merender FlightListCard dan memicu handshake interaktif saat 'Pilih Penerbangan' diklik", () => {
+    mockMessages = [
+      {
+        id: "msg-1",
+        role: "assistant",
+        parts: [
+          {
+            type: "tool-searchFlights",
+            toolCallId: "call-1",
+            state: "output-available",
+            input: { origin: "Jakarta", destination: "Bali" },
+            output: {
+              success: true,
+              flights: [MOCK_FLIGHTS[0]],
+            },
+          },
+        ],
+      },
+    ];
+
+    render(<Home />);
+
+    expect(screen.getByTestId("flight-list-card")).toBeInTheDocument();
+    expect(screen.getByText("Garuda Indonesia")).toBeInTheDocument();
+
+    const selectBtn = screen.getByTestId("select-flight-btn");
+    fireEvent.click(selectBtn);
+
+    expect(mockSendMessage).toHaveBeenCalledWith({
+      text: expect.stringContaining("GA-401"),
+    });
+  });
+
+  it("harus merender SeatPicker saat tool selectFlight berstatus output-available", () => {
+    mockMessages = [
+      {
+        id: "msg-1",
+        role: "assistant",
+        parts: [
+          {
+            type: "tool-selectFlight",
+            toolCallId: "call-2",
+            state: "output-available",
+            input: { flightId: "GA-401" },
+            output: {
+              success: true,
+              flight: MOCK_FLIGHTS[0],
+              seats: generateSeatsForFlight("GA-401"),
+            },
+          },
+        ],
+      },
+    ];
+
+    render(<Home />);
+
+    expect(screen.getByTestId("seat-picker")).toBeInTheDocument();
+    expect(screen.getByText(/Pilih Kursi - GA-401/i)).toBeInTheDocument();
+  });
 });
