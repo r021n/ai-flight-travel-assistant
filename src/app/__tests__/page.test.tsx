@@ -101,7 +101,7 @@ describe("Phase 3 - Home Page (Generative UI Chat Interface)", () => {
 
     expect(screen.getByTestId("flight-skeleton")).toBeInTheDocument();
     expect(
-      screen.getByText("/Mencari jadwal penerbangan terbaik/i"),
+      screen.getByText(/Mencari jadwal penerbangan terbaik/i),
     ).toBeInTheDocument();
   });
 
@@ -163,5 +163,59 @@ describe("Phase 3 - Home Page (Generative UI Chat Interface)", () => {
 
     expect(screen.getByTestId("seat-picker")).toBeInTheDocument();
     expect(screen.getByText(/Pilih Kursi - GA-401/i)).toBeInTheDocument();
+  });
+
+  it("harus merender BookingReceipt saat tool bookFlight berstatus output-available", () => {
+    const mockBooking = createBooking({
+      flightId: "GA-401",
+      seatId: "12A",
+      passengerName: "Budi Santoso",
+    });
+
+    mockMessages = [
+      {
+        id: "msg-1",
+        role: "assistant",
+        parts: [
+          {
+            type: "tool-bookFlight",
+            toolCallId: "call-3",
+            state: "output-available",
+            input: {
+              flightId: "GA-401",
+              seatId: "12A",
+              passengerName: "Budi Santoso",
+            },
+            output: {
+              success: true,
+              booking: mockBooking,
+            },
+          },
+        ],
+      },
+    ];
+
+    render(<Home />);
+
+    expect(screen.getByTestId("booking-receipt")).toBeInTheDocument();
+    expect(screen.getByText("Bukti Pemesanan")).toBeInTheDocument();
+    expect(screen.getAllByText(/GA-401/i).length).toBeGreaterThan(0);
+  });
+
+  it("harus mengeksekusi Server Action saat tombol simulasi diklik", async () => {
+    render(<Home />);
+
+    const serverActionBtn = screen.getByTestId("test-server-action-btn");
+    fireEvent.click(serverActionBtn);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId("server-action-receipt-container"),
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByText(/Transaksi Dikonfirmasi melalui Next.js Server Action/i),
+    ).toBeInTheDocument();
   });
 });

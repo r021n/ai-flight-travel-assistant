@@ -14,16 +14,18 @@ vi.mock("ai", async (importOriginal) => {
     ...actual,
     isStepCount: vi.fn((count: number) => `isStepCount(${count})`),
     streamText: vi.fn(() => ({
-      toUIMessageStreamResponse: vi.fn(
-        () =>
-          new Response('0:"Halo! Ada yang bisa saya bantu?"\n', {
-            headers: {
-              "Content-Type": "text/plain; charset=utf-8",
-              "x-vercel-ai-ui-message-stream": "v1",
-            },
-          }),
-      ),
+      stream: { pipeThrough: vi.fn() },
     })),
+    toUIMessageStream: vi.fn(() => ({ pipeThrough: vi.fn() })),
+    createUIMessageStreamResponse: vi.fn(
+      () =>
+        new Response('0:"Halo! Ada yang bisa saya bantu?"\n', {
+          headers: {
+            "Content-Type": "text/plain; charset=utf-8",
+            "x-vercel-ai-ui-message-stream": "v1",
+          },
+        }),
+    ),
   };
 });
 

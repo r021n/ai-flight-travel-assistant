@@ -431,7 +431,7 @@ export default function Home() {
           {serverActionResult && (
             <div
               className="space-y-2 pt-2 border-t border-dashed"
-              data-testid="server-action-result-container"
+              data-testid="server-action-receipt-container"
             >
               <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                 <CheckCircle2 className="h-4 w-4" />
