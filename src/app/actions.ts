@@ -1,4 +1,4 @@
-"user server";
+"use server";
 
 import { createBooking } from "@/data/flight";
 import type { BookingReceipt } from "@/types/flight";

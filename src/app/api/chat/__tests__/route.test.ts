@@ -88,6 +88,18 @@ describe("Phase 2 - API Route /api/chat Integration Test", () => {
       },
     ];
 
+    const expectedModelMessages = [
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: "Cari penerbangan dari Jakarta ke Bali besok pagi, budget di bawah 1.5 juta",
+          },
+        ],
+      },
+    ];
+
     const request = new Request("http://localhost:3000/api/chat", {
       method: "POST",
       body: JSON.stringify({ messages }),
@@ -101,7 +113,7 @@ describe("Phase 2 - API Route /api/chat Integration Test", () => {
 
     expect(streamText).toHaveBeenCalledWith(
       expect.objectContaining({
-        messages,
+        expectedModelMessages,
         stopWhen: "isStepCount(5)",
         tools: expect.objectContaining({
           searchFlights: expect.any(Object),
