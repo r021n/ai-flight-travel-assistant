@@ -18,10 +18,12 @@ export function FlightListCard({
   if (!flights || flights.length === 0) {
     return (
       <div
-        className="rounded-lg border border-dashed p-6 text-center text-muted-foreground"
+        className="rounded-2xl border border-dashed border-border p-6 text-center"
         data-testid="flight-list-empty"
       >
-        <Plane className="mx-auto h-8 w-8 mb-2 opacity-50" />
+        <div className="mx-auto h-10 w-10 rounded-xl bg-muted flex items-center justify-center mb-3">
+          <Plane className="h-5 w-5 text-muted-foreground" />
+        </div>
         <p className="text-sm font-medium">
           Tidak ada jadwal penerbangan yang sesuai kriteria.
         </p>
@@ -34,16 +36,18 @@ export function FlightListCard({
   }
 
   return (
-    <div className="space-y-4 w-full" data-testid="flight-list-card">
+    <div className="space-y-3 w-full" data-testid="flight-list-card">
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-2">
-          <Plane className="h-4 w-4 text-primary" />
+          <div className="h-6 w-6 rounded-md bg-primary/10 flex items-center justify-center">
+            <Plane className="h-3.5 w-3.5 text-primary" />
+          </div>
           <h3 className="text-sm font-semibold">
-            {title || `Tersedia ${flights.length} Pilihan Penerbangan`}
+            {title || `Tersedia ${flights.length} pilihan penerbangan`}
           </h3>
         </div>
         <span className="text-xs text-muted-foreground">
-          Urutkan: Harga Termurah
+          Urutkan: Termurah
         </span>
       </div>
 

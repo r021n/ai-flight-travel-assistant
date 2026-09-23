@@ -60,23 +60,29 @@ export function SeatPicker({
   return (
     <Card className="w-full" data-testid="seat-picker">
       <CardHeader>
-        <CardTitle className="text-lg">Pilih Kursi - {flightId}</CardTitle>
-        <div className="flex items-center gap-4 text-sm">
-          <div className="h-4 w-4 rounded bg-primary" />
-          <span>Dipilih</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="w-4 h-4 rounded bg-green-500" />
-          <span>Tersedia</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="w-4 h-4 rounded bg-muted" />
-          <span>Tidak Tersedia</span>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <CardTitle className="text-base font-semibold">
+            Pilih Kursi - {flightId}
+          </CardTitle>
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1.5">
+              <div className="h-3.5 w-3.5 rounded bg-primary" />
+              <span>Dipilih</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="h-3.5 w-3.5 rounded bg-emerald-500" />
+              <span>Tersedia</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="h-3.5 w-3.5 rounded bg-muted border border-border" />
+              <span>Habis</span>
+            </div>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col items-center gap-2">
-          <div className="flex gap-2 text-xs font-medium text-muted-foreground">
+          <div className="flex gap-1 text-xs font-medium text-muted-foreground">
             {columns.map((col) => (
               <div key={col} className="w-8 text-center">
                 {col}
@@ -102,14 +108,14 @@ export function SeatPicker({
                       disabled={!seat.available}
                       data-testid={`seat-${seat.id}`}
                       className={cn(
-                        "w-8 h-8 rounded text-xs font-medium transition-colors",
+                        "w-8 h-8 rounded-lg text-xs font-medium transition-all",
                         !seat.available &&
-                          "bg-muted text-muted-foreground cursor-not-allowed",
+                          "bg-muted text-muted-foreground/60 cursor-not-allowed",
                         seat.available &&
                           selectedSeat?.id !== seat.id &&
-                          "bg-green-500 text-white hover:bg-green-600",
+                          "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white",
                         selectedSeat?.id === seat.id &&
-                          "bg-primary text-primary-foreground",
+                          "bg-primary text-primary-foreground ring-2 ring-primary/30 scale-105",
                       )}
                     >
                       {seat.id}
@@ -121,21 +127,26 @@ export function SeatPicker({
           </div>
         </div>
         {selectedSeat && (
-          <div className="mt-4 p-3 bg-muted rounded-lg">
-            <p className="text-sm font-medium">
-              Kursi dipilih: {selectedSeat.id}
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {selectedSeat.type === "window"
-                ? "Jendela"
-                : selectedSeat.type === "aisle"
-                  ? "Lorong"
-                  : "Tengah"}
-            </p>
+          <div className="mt-4 p-3 rounded-xl bg-primary/5 border border-primary/20 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold">
+                Kursi {selectedSeat.id}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {selectedSeat.type === "window"
+                  ? "Jendela"
+                  : selectedSeat.type === "aisle"
+                    ? "Lorong"
+                    : "Tengah"}
+              </p>
+            </div>
+            <span className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
+              {selectedSeat.id}
+            </span>
           </div>
         )}
         <Button
-          className="w-full mt-4"
+          className="w-full mt-4 rounded-xl h-10"
           disabled={!selectedSeat}
           onClick={handleConfirm}
           data-testid="confirm-seat-btn"
