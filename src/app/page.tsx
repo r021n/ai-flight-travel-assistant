@@ -13,7 +13,6 @@ import {
 } from "@/components/flight-skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { processBookingAction } from "./actions";
 import type {
@@ -35,9 +34,9 @@ import {
 } from "lucide-react";
 
 const SUGGESTED_PROMPTS = [
-  "Cari penerbangan dari Jakarta ke Bali besok pagi, budget di bawah 1.5 juta",
-  "Tampilkan tiket pesawat Jakarta ke Surabaya yang paling murah",
-  "Penerbangan Citilink Jakarta ke Bali ada jam berapa saja?",
+  "Cari penerbangan Jakarta ke Bali besok pagi, budget 1.5 juta",
+  "Tiket Jakarta ke Surabaya paling murah",
+  "Jam penerbangan Citilink Jakarta ke Bali?",
 ];
 
 export default function Home() {
@@ -123,14 +122,7 @@ export default function Home() {
                 <h1 className="text-base font-bold sm:text-lg">
                   AI Flight & Travel Assistant
                 </h1>
-                <Badge variant="secondary" className="text-xs">
-                  Phase 3 GenUI
-                </Badge>
               </div>
-              <p className="text-xs text-muted-foreground flex items-center gap-1">
-                <Sparkles className="h-3 w-3 text-amber-500" />
-                Model: Gemma 4 (<code>gemma-4-31b-it</code>)
-              </p>
             </div>
           </div>
 
@@ -174,9 +166,8 @@ export default function Home() {
               Selamat Datang di AI Travel Assistant
             </h2>
             <p className="text-sm text-muted-foreground max-w-md mt-2">
-              Asisten pintar pemesanan tiket pesawat interaktif berbasis{" "}
-              <strong>Generative UI</strong>. Cari penerbangan, pilih kursi
-              favorit, dan terbitkan e-tiket langsung di dalam obrolan.
+              Cari penerbangan, pilih kursi favorit, dan terbitkan e-tiket
+              langsung di dalam obrolan.
             </p>
 
             {/* Konfigurasi Nama Penumpang */}
@@ -185,7 +176,7 @@ export default function Home() {
                 htmlFor="passenger-name-input"
                 className="text-xs font-semibold text-muted-foreground block mb-1.5"
               >
-                Konfigurasi Nama Penumpang untuk Pemesanan:
+                Nama Penumpang:
               </label>
               <div className="flex gap-2">
                 <Input
@@ -316,7 +307,7 @@ export default function Home() {
                           <div key={callId} className="w-full space-y-2">
                             <div className="flex items-center gap-2 text-xs text-muted-foreground animate-pulse">
                               <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-                              <span>Menyiapkan denah kursi kabin...</span>
+                              <span>Menyiapkan denah kursi...</span>
                             </div>
                             <SeatPickerSkeleton />
                           </div>
@@ -373,10 +364,7 @@ export default function Home() {
                           <div key={callId} className="w-full space-y-2">
                             <div className="flex items-center gap-2 text-xs text-muted-foreground animate-pulse">
                               <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-                              <span>
-                                Memproses reservasi tiket dan menerbitkan
-                                e-tiket...
-                              </span>
+                              <span>Memproses pemesanan...</span>
                             </div>
                             <BookingReceiptSkeleton />
                           </div>
@@ -448,7 +436,7 @@ export default function Home() {
           {isLoading && (
             <div className="flex gap-3 items-center text-muted-foreground text-xs animate-pulse pl-1">
               <Bot className="h-4 w-4 text-primary" />
-              <span>AI sedang memproses respon...</span>
+              <span>AI sedang merespon...</span>
             </div>
           )}
 
@@ -458,9 +446,7 @@ export default function Home() {
               <CardContent className="p-4 flex items-start gap-3 text-destructive text-sm">
                 <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <p className="font-semibold">
-                    Terjadi kendala pada streaming AI
-                  </p>
+                  <p className="font-semibold">Gagal memuat respon AI</p>
                   <p className="text-xs opacity-90">
                     {error.message ||
                       "Pastikan API Key GOOGLE_GENERATIVE_AI_API_KEY telah diisi di .env.local"}
@@ -485,7 +471,7 @@ export default function Home() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ketik permintaan penerbangan Anda (misal: Cari tiket Jakarta ke Bali besok)..."
+              placeholder="Cari tiket Jakarta ke Bali besok..."
               disabled={isLoading}
               className="flex-1 text-sm h-11"
               data-testid="chat-input"
@@ -505,7 +491,7 @@ export default function Home() {
           <div className="flex items-center justify-between text-[11px] text-muted-foreground px-1">
             <span>
               Klik tombol <em>&quot;Pilih Penerbangan&quot;</em> atau nomor
-              kursi untuk memicu handshake interaktif otomatis
+              kursi untuk memicu respon AI
             </span>
             <button
               type="button"
@@ -515,7 +501,7 @@ export default function Home() {
               data-testid="test-server-action-btn"
             >
               <CreditCard className="h-3 w-3" />
-              <span>Simulasi Server Action Bayar GA-401 (12A)</span>
+              <span>Simulasi Bayar GA-401 (12A)</span>
             </button>
           </div>
         </div>
