@@ -61,4 +61,28 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     window.localStorage.setItem(STORAGE_KEY, next);
     emitChange();
   }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    document.cookie = `locale=${locale}; path=/; max-age=31536000; samesite=lax`;
+  }, [locale]);
+
+  return (
+    <LanguageContext.Provider
+      value={{ locale, setLocale, t: getDictionary(locale) }}
+    >
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage(): LanguageContextValue {
+  const context = useContext(LanguageContext);
+  if (context) return context;
+
+  return {
+    locale: DEFAULT_LOCALE,
+    setLocale: () => {},
+    t: getDictionary(DEFAULT_LOCALE),
+  };
 }
