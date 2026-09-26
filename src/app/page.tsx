@@ -14,6 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { processBookingAction } from "./actions";
+import { useLanguage } from "@/i18n/language-provider";
+import { LOCALES, type Locale } from "@/i18n/dictionaries";
 import type {
   Flight,
   Seat,
@@ -30,15 +32,47 @@ import {
   UserCheck,
   CreditCard,
   CheckCircle2,
+  Globe,
 } from "lucide-react";
 
-const SUGGESTED_PROMPTS = [
-  "Cari penerbangan Jakarta ke Bali besok pagi, budget 1.5 juta",
-  "Tiket Jakarta ke Surabaya paling murah",
-  "Jam penerbangan Citilink Jakarta ke Bali?",
-];
+// const SUGGESTED_PROMPTS = [
+//   "Cari penerbangan Jakarta ke Bali besok pagi, budget 1.5 juta",
+//   "Tiket Jakarta ke Surabaya paling murah",
+//   "Jam penerbangan Citilink Jakarta ke Bali?",
+// ];
+
+function LanguageSwitcher() {
+  const { locale, setLocale, t } = useLanguage();
+
+  return (
+    <div
+      className="flex items-center gap-0.5 rounded-full border border-border/60 bg-muted/70 p-0.5"
+      data-testid="language-switcher"
+      title={t.nav.changeLanguage}
+    >
+      <Globe className="h-3.5 w-3.5 text-muted-foreground ml-1.5 mr-0.5" />
+      {LOCALES.map((code: Locale) => (
+        <button
+          key={code}
+          type="button"
+          onClick={() => setLocale(code)}
+          aria-pressed={locale === code}
+          className={`px-2 py-0.5 rounded-full text-[11px] font-semibold uppercase transition-colors ${
+            locale === code
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+          data-testid={`lang-btn-${code}`}
+        >
+          {code}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 export default function Home() {
+  const { locale, t } = useLanguage();
   const [input, setInput] = useState("");
   const [passengerName, setPassengerName] = useState("Budi Santoso");
   const [serverActionResult, setServerActionResult] =
@@ -72,13 +106,18 @@ export default function Home() {
 
   const handleSelectFlight = (flight: Flight) => {
     sendMessage({
-      text: `Saya memilih penerbangan ${flight.airline} (${flight.flightNumber}) dari ${flight.origin} ke ${flight.destination}. Mohon tampilkan denah kursi pesawat untuk penerbangan ini.`,
+      text: t.chat.selectFlightHandshake(
+        flight.airline,
+        flight.flightNumber,
+        flight.origin,
+        flight.destination,
+      ),
     });
   };
 
   const handleSelectSeat = async (seat: Seat) => {
     sendMessage({
-      text: `Saya memilih kursi nomor ${seat.id} untuk penumpang ${passengerName}. Tolong proses reservasi dan terbitkan bukti pembayarannya.`,
+      text: t.chat.selectSeatHandshake(seat.id, passengerName),
     });
   };
 
@@ -98,10 +137,10 @@ export default function Home() {
       if (res.success && res.booking) {
         setServerActionResult(res.booking);
       } else {
-        alert(res.error || "Gagal memproses transaksi via Server Action.");
+        alert(res.error || t.chat.serverActionFailed);
       }
     } catch (error) {
-      alert("Terjadi kesalahan saat memanggil Server Action: " + String(error));
+      alert(t.chat.serverActionError(String(error)));
     } finally {
       setIsProcessingAction(false);
     }
@@ -121,12 +160,14 @@ export default function Home() {
                 AI Flight & Travel Assistant
               </h1>
               <p className="hidden sm:block text-[11px] text-muted-foreground leading-none mt-0.5">
-                Cari tiket, pilih kursi, cetak e-tiket
+                {t.nav.subtitle}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+
             <div className="hidden sm:flex items-center gap-1.5 bg-muted/70 px-2.5 py-1 rounded-full border border-border/60 text-xs">
               <UserCheck className="h-3.5 w-3.5 text-primary" />
               <span className="font-medium text-foreground">
@@ -143,10 +184,10 @@ export default function Home() {
                   setServerActionResult(null);
                 }}
                 className="text-xs gap-1.5 text-muted-foreground hover:text-foreground"
-                title="Reset percakapan"
+                title={t.nav.resetTooltip}
               >
                 <RotateCcw className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Reset</span>
+                <span className="hidden sm:inline">{t.nav.reset}</span>
               </Button>
             )}
           </div>
@@ -158,15 +199,11 @@ export default function Home() {
         {/* Tampilan Chat Saat Kosong */}
         {messages.length === 0 && !serverActionResult && (
           <div className="flex flex-col items-center justify-center my-auto py-10 text-center">
-            {/* <div className="h-16 w-16 rounded-3xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground mb-5 shadow-lg shadow-primary/25">
-              <Plane className="h-8 w-8" />
-            </div> */}
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Mau terbang ke mana?
+              {t.empty.title}
             </h2>
             <p className="text-sm text-muted-foreground max-w-md mt-2 leading-relaxed">
-              Cari penerbangan, pilih kursi favorit, dan terbitkan e-tiket
-              langsung di dalam obrolan.
+              {t.empty.subtitle}
             </p>
 
             {/* Konfigurasi Nama Penumpang */}
@@ -175,13 +212,13 @@ export default function Home() {
                 htmlFor="passenger-name-input"
                 className="text-xs font-medium text-muted-foreground block mb-2"
               >
-                Nama Penumpang
+                {t.empty.passengerName}
               </label>
               <Input
                 id="passenger-name-input"
                 value={passengerName}
                 onChange={(e) => setPassengerName(e.target.value)}
-                placeholder="Masukkan nama penumpang..."
+                placeholder={t.empty.passengerPlaceholder}
                 className="text-sm h-9"
                 data-testid="passenger-name-input"
               />
@@ -190,10 +227,10 @@ export default function Home() {
             {/* Tombol Saran Prompt */}
             <div className="mt-6 w-full max-w-md space-y-2">
               <p className="text-xs font-medium text-muted-foreground text-center">
-                Coba tanyakan langsung
+                {t.empty.tryAsking}
               </p>
               <div className="flex flex-col gap-2">
-                {SUGGESTED_PROMPTS.map((promptText, idx) => (
+                {t.prompts.map((promptText, idx) => (
                   <button
                     key={idx}
                     onClick={() => handlePromptClick(promptText)}
@@ -253,7 +290,7 @@ export default function Home() {
                           <div key={callId} className="w-full space-y-2">
                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
                               <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
-                              <span>Mencari jadwal penerbangan terbaik...</span>
+                              <span>{t.chat.searchingFlights}</span>
                             </div>
                             <FlightCardSkeleton />
                           </div>
@@ -283,8 +320,8 @@ export default function Home() {
                           >
                             <AlertCircle className="h-4 w-4 shrink-0" />
                             <span>
-                              Gagal memuat penerbangan:{" "}
-                              {part.errorText || "Terjadi kesalahan"}
+                              {t.chat.loadFlightsError}{" "}
+                              {part.errorText || t.chat.somethingWentWrong}
                             </span>
                           </div>
                         );
@@ -302,7 +339,7 @@ export default function Home() {
                           <div key={callId} className="w-full space-y-2">
                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
                               <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
-                              <span>Menyiapkan denah kursi...</span>
+                              <span>{t.chat.preparingSeatMap}</span>
                             </div>
                             <SeatPickerSkeleton />
                           </div>
@@ -338,8 +375,8 @@ export default function Home() {
                           >
                             <AlertCircle className="h-4 w-4 shrink-0" />
                             <span>
-                              Gagal menampilkan denah kursi:{" "}
-                              {part.errorText || "Terjadi Kesalahan"}
+                              {t.chat.preparingSeatMap}{" "}
+                              {part.errorText || t.chat.somethingWentWrong}
                             </span>
                           </div>
                         );
@@ -357,7 +394,7 @@ export default function Home() {
                           <div key={callId} className="w-full space-y-2">
                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
                               <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
-                              <span>Memproses pemesanan...</span>
+                              <span>{t.chat.processingBooking}</span>
                             </div>
                             <BookingReceiptSkeleton />
                           </div>
@@ -385,8 +422,8 @@ export default function Home() {
                           >
                             <AlertCircle className="h-4 w-4 shrink-0" />
                             <span>
-                              Gagal memproses tiket:{" "}
-                              {part.errorText || "Terjadi kesalahan"}
+                              {t.chat.bookingError}{" "}
+                              {part.errorText || t.chat.somethingWentWrong}
                             </span>
                           </div>
                         );
@@ -414,9 +451,7 @@ export default function Home() {
             >
               <div className="flex items-center gap-2 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                 <CheckCircle2 className="h-4 w-4" />
-                <span>
-                  Transaksi Dikonfirmasi melalui Next.js Server Action
-                </span>
+                <span>{t.chat.serverActionConfirmed}</span>
               </div>
               <BookingReceipt receipt={serverActionResult} />
             </div>
@@ -429,7 +464,7 @@ export default function Home() {
                 <Bot className="h-4 w-4" />
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="animate-pulse">AI sedang merespon</span>
+                <span className="animate-pulse">{t.chat.aiTyping}</span>
                 <span className="flex gap-0.5">
                   <span className="h-1 w-1 rounded-full bg-primary animate-bounce [animation-delay:0ms]" />
                   <span className="h-1 w-1 rounded-full bg-primary animate-bounce [animation-delay:150ms]" />
@@ -444,10 +479,11 @@ export default function Home() {
             <div className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 flex items-start gap-3 text-destructive text-sm">
               <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
               <div className="space-y-1">
-                <p className="font-semibold text-xs">Gagal memuat respon AI</p>
+                <p className="font-semibold text-xs">
+                  {t.chat.aiResponseError}
+                </p>
                 <p className="text-xs opacity-90">
-                  {error.message ||
-                    "Pastikan API Key GOOGLE_GENERATIVE_AI_API_KEY telah diisi di .env.local"}
+                  {error.message || t.chat.aiResponseFallback}
                 </p>
               </div>
             </div>
@@ -468,7 +504,7 @@ export default function Home() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Cari tiket Jakarta ke Bali besok..."
+              placeholder={t.chat.inputPlaceholder}
               disabled={isLoading}
               className="flex-1 text-sm h-11 rounded-xl bg-muted/50 border-border/70 focus:bg-background"
               data-testid="chat-input"
@@ -480,16 +516,13 @@ export default function Home() {
               data-testid="send-btn"
             >
               <Send className="h-4 w-4" />
-              <span className="hidden sm:inline">Kirim</span>
+              <span className="hidden sm:inline">{t.chat.send}</span>
             </Button>
           </form>
 
           {/* Helper Pengujian Server Action */}
           <div className="flex items-center justify-between text-[11px] text-muted-foreground px-1">
-            <span className="hidden sm:inline">
-              Klik &quot;Pilih Penerbangan&quot; atau nomor kursi untuk memicu
-              respon AI
-            </span>
+            <span className="hidden sm:inline">{t.chat.helperText}</span>
             <button
               type="button"
               onClick={() => handleDirectServerActionBooking("GA-401", "12A")}
@@ -498,7 +531,7 @@ export default function Home() {
               data-testid="test-server-action-btn"
             >
               <CreditCard className="h-3 w-3" />
-              <span>Simulasi Bayar GA-401 (12A)</span>
+              <span>{t.chat.simulatePayment}</span>
             </button>
           </div>
         </div>

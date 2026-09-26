@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { LanguageProvider } from "@/i18n";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,16 +15,18 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "AI Flight & Travel Assistant",
-  description: "Asisten Pemesanan Tiket Pesawat dengan AI",
+  description: "AI-powered flight ticket booking assistant",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="id"
+      lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans">
+        <LanguageProvider>{children}</LanguageProvider>
+      </body>
     </html>
   );
 }
