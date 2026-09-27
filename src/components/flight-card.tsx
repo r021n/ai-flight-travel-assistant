@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Plane } from "lucide-react";
+import { useLanguage } from "@/i18n/language-provider";
+import { formatCurrency, formatDuration } from "@/i18n/helpers";
 import type { Flight } from "@/types/flight";
 
 interface FlightCardProps {
@@ -19,14 +21,7 @@ interface FlightCardProps {
 }
 
 export function FlightCard({ flight, onSelect }: FlightCardProps) {
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+  const { locale, t } = useLanguage();
 
   return (
     <Card
@@ -42,7 +37,7 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
             variant={flight.class === "business" ? "default" : "secondary"}
             className="rounded-full"
           >
-            {flight.class.charAt(0).toUpperCase() + flight.class.slice(1)}
+            {t.flight.classes[flight.class]}
           </Badge>
         </div>
         <p className="text-xs text-muted-foreground">{flight.flightNumber}</p>
@@ -59,13 +54,15 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
           </div>
           <div className="flex flex-col items-center flex-1 px-4">
             <span className="text-xs text-muted-foreground">
-              {flight.duration}
+              {formatDuration(flight.duration, locale)}
             </span>
             <div className="relative w-full flex items-center justify-center my-1.5">
               <div className="w-full h-px bg-border" />
               <Plane className="absolute h-3.5 w-3.5 text-primary bg-card px-0.5" />
             </div>
-            <span className="text-xs font-medium text-primary">Direct</span>
+            <span className="text-xs font-medium text-primary">
+              {t.flight.direct}
+            </span>
           </div>
           <div className="flex flex-col items-end">
             <span className="text-xl font-bold tracking-tight">
@@ -78,9 +75,11 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
         </div>
         <Separator className="my-4" />
         <div className="flex items-center justify-between">
-          <span className="text-xs text-muted-foreground">Harga per orang</span>
+          <span className="text-xs text-muted-foreground">
+            {t.flight.perPerson}
+          </span>
           <span className="text-lg font-bold text-primary tracking-tight">
-            {formatPrice(flight.price)}
+            {formatCurrency(flight.price, locale)}
           </span>
         </div>
       </CardContent>
@@ -90,7 +89,7 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
           onClick={() => onSelect?.(flight)}
           data-testid="select-flight-btn"
         >
-          Pilih Penerbangan
+          {t.flight.select}
         </Button>
       </CardFooter>
     </Card>

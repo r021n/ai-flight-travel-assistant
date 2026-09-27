@@ -35,12 +35,6 @@ import {
   Globe,
 } from "lucide-react";
 
-// const SUGGESTED_PROMPTS = [
-//   "Cari penerbangan Jakarta ke Bali besok pagi, budget 1.5 juta",
-//   "Tiket Jakarta ke Surabaya paling murah",
-//   "Jam penerbangan Citilink Jakarta ke Bali?",
-// ];
-
 function LanguageSwitcher() {
   const { locale, setLocale, t } = useLanguage();
 
