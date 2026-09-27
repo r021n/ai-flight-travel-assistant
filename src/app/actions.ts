@@ -1,6 +1,13 @@
 "use server";
 
 import { createBooking } from "@/data/flight";
+import {
+  DEFAULT_LOCALE,
+  getDictionary,
+  isLocale,
+  type Locale,
+} from "@/i18n/dictionaries";
+import { getLocaleFromCookies } from "@/i18n/helpers";
 import type { BookingReceipt } from "@/types/flight";
 
 export interface BookingActionResult {
@@ -14,13 +21,21 @@ export async function processBookingAction(params: {
   seatId: string;
   passengerName: string;
   paymentMethod?: string;
+  locale?: string;
 }): Promise<BookingActionResult> {
+  let locale: Locale = DEFAULT_LOCALE;
+  if (isLocale(params.locale)) {
+    locale = params.locale;
+  } else {
+    locale = await getLocaleFromCookies();
+  }
+  const t = getDictionary(locale);
+
   try {
     if (!params.flightId || !params.seatId || !params.passengerName) {
       return {
         success: false,
-        error:
-          "Data reservasi tidak lengkap: flightId, seatId, dan passengerName wajib diisi.",
+        error: t.server.incompleteData,
       };
     }
 
@@ -34,7 +49,7 @@ export async function processBookingAction(params: {
     if (!booking) {
       return {
         success: false,
-        error: `Penerbangan dengan kode ${params.flightId} tidak ditemukan atau gagal diproses`,
+        error: t.server.flightNotFound(params.flightId),
       };
     }
 
@@ -45,10 +60,7 @@ export async function processBookingAction(params: {
   } catch (error) {
     return {
       success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Terjadi kesalahan internal pada Server",
+      error: error instanceof Error ? error.message : t.server.internalError,
     };
   }
 }

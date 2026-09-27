@@ -3,6 +3,7 @@
 import { FlightCard } from "./flight-card";
 import type { Flight } from "@/types/flight";
 import { Plane } from "lucide-react";
+import { useLanguage } from "@/i18n/language-provider";
 
 interface FlightListCardProps {
   flights: Flight[];
@@ -15,6 +16,8 @@ export function FlightListCard({
   onSelectFlight,
   title,
 }: FlightListCardProps) {
+  const { t } = useLanguage();
+
   if (!flights || flights.length === 0) {
     return (
       <div
@@ -24,12 +27,9 @@ export function FlightListCard({
         <div className="mx-auto h-10 w-10 rounded-xl bg-muted flex items-center justify-center mb-3">
           <Plane className="h-5 w-5 text-muted-foreground" />
         </div>
-        <p className="text-sm font-medium">
-          Tidak ada jadwal penerbangan yang sesuai kriteria.
-        </p>
+        <p className="text-sm font-medium">{t.flight.emptyTitle}</p>
         <p className="text-xs text-muted-foreground mt-1">
-          Coba sesuaikan rute asal, tujuan, atau tingkatkan batas anggaran harga
-          anda.
+          {t.flight.emptyDesc}
         </p>
       </div>
     );
@@ -43,11 +43,11 @@ export function FlightListCard({
             <Plane className="h-3.5 w-3.5 text-primary" />
           </div>
           <h3 className="text-sm font-semibold">
-            {title || `Tersedia ${flights.length} pilihan penerbangan`}
+            {title || t.flight.availableCount(flights.length)}
           </h3>
         </div>
         <span className="text-xs text-muted-foreground">
-          Urutkan: Termurah
+          {t.flight.sortByCheapest}
         </span>
       </div>
 

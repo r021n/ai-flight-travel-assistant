@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/i18n";
 import type { Seat } from "@/types/flight";
 
 interface SeatPickerProps {
@@ -41,6 +42,7 @@ export function SeatPicker({
   seats: initialSeats,
   onSelectSeat,
 }: SeatPickerProps) {
+  const { t } = useLanguage();
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
   const [seats] = useState<Seat[]>(initialSeats || generateSeats());
 
@@ -62,20 +64,20 @@ export function SeatPicker({
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <CardTitle className="text-base font-semibold">
-            Pilih Kursi - {flightId}
+            {t.seat.titlePrefix} - {flightId}
           </CardTitle>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <div className="flex items-center gap-1.5">
               <div className="h-3.5 w-3.5 rounded bg-primary" />
-              <span>Dipilih</span>
+              <span>{t.seat.legendSelected}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="h-3.5 w-3.5 rounded bg-emerald-500" />
-              <span>Tersedia</span>
+              <span>{t.seat.legendAvailable}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="h-3.5 w-3.5 rounded bg-muted border border-border" />
-              <span>Habis</span>
+              <span>{t.seat.legendTaken}</span>
             </div>
           </div>
         </div>
@@ -130,14 +132,10 @@ export function SeatPicker({
           <div className="mt-4 p-3 rounded-xl bg-primary/5 border border-primary/20 flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold">
-                Kursi {selectedSeat.id}
+                {t.seat.seatLabel} {selectedSeat.id}
               </p>
               <p className="text-xs text-muted-foreground">
-                {selectedSeat.type === "window"
-                  ? "Jendela"
-                  : selectedSeat.type === "aisle"
-                    ? "Lorong"
-                    : "Tengah"}
+                {t.seat.types[selectedSeat.type]}
               </p>
             </div>
             <span className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
@@ -151,7 +149,7 @@ export function SeatPicker({
           onClick={handleConfirm}
           data-testid="confirm-seat-btn"
         >
-          Lanjut Bayar
+          {t.seat.continue}
         </Button>
       </CardContent>
     </Card>
