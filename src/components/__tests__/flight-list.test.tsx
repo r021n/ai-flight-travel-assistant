@@ -31,7 +31,7 @@ describe("Phase 3 - FlightListCard Component", () => {
 
     expect(screen.getByTestId("flight-list-empty")).toBeInTheDocument();
     expect(
-      screen.getByText(/Tidak ada jadwal penerbangan yang sesuai kriteria/i),
+      screen.getByText(/No flight schedules match your criteria/i),
     ).toBeInTheDocument();
   });
 });

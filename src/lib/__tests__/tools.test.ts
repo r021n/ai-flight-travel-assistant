@@ -103,7 +103,7 @@ describe("Phase 2 - AI Tools Execution", () => {
       )) as { success: boolean; error: string };
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain("tidak ditemukan");
+      expect(result.error).toContain("was not found");
     });
   });
 

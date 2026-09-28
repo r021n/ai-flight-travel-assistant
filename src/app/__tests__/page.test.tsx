@@ -55,7 +55,7 @@ describe("Phase 3 - Home Page (Generative UI Chat Interface)", () => {
 
     expect(mockSendMessage).toHaveBeenCalledTimes(1);
     expect(mockSendMessage).toHaveBeenCalledWith({
-      text: expect.stringContaining("Jakarta ke Bali"),
+      text: expect.stringContaining("Jakarta to Bali"),
     });
   });
 
@@ -198,7 +198,7 @@ describe("Phase 3 - Home Page (Generative UI Chat Interface)", () => {
     render(<Home />);
 
     expect(screen.getByTestId("booking-receipt")).toBeInTheDocument();
-    expect(screen.getByText("Bukti Pemesanan")).toBeInTheDocument();
+    expect(screen.getByText("Booking Confirmation")).toBeInTheDocument();
     expect(screen.getAllByText(/GA-401/i).length).toBeGreaterThan(0);
   });
 

@@ -10,64 +10,86 @@ import {
   generateSeatsForFlight,
   createBooking,
 } from "@/data/flight";
+import {
+  DEFAULT_LOCALE,
+  getDictionary,
+  isLocale,
+  type Dictionary,
+  type Locale,
+} from "@/i18n/dictionaries";
 
-export const searchFlightsTool = tool({
-  description:
-    "Mencari jadwal dan harga tiket penrbangan berdasarkan kota asal, kota tujuan, dan batas anggaran harga (opsional).",
-  inputSchema: searchFlightsSchema,
-  execute: async ({ origin, destination, maxPrice }) => {
-    const flights = searchFlightsData({ origin, destination, maxPrice });
-    return {
-      success: true,
-      query: { origin, destination, maxPrice },
-      count: flights.length,
-      flights,
-    };
-  },
-});
-
-export const selectFlightTool = tool({
-  description:
-    "Memilih penerbangan tertentu berdasarkan flightId untuk melihat detail penerbangan dan denah kursi yang tersedia.",
-  inputSchema: selectFlightSchema,
-  execute: async ({ flightId }) => {
-    const flight = getFlightById(flightId);
-    if (!flight) {
+function buildSearchFlightsTool(t: Dictionary) {
+  return tool({
+    description: t.tools.searchFlightsDesc,
+    inputSchema: searchFlightsSchema,
+    execute: async ({ origin, destination, maxPrice }) => {
+      const flights = searchFlightsData({ origin, destination, maxPrice });
       return {
-        success: false,
-        error: `Penerbangan dengan ID '${flightId}' tidak ditemukan.`,
+        success: true,
+        query: { origin, destination, maxPrice },
+        count: flights.length,
+        flights,
       };
-    }
-    const seats = generateSeatsForFlight(flightId);
-    return {
-      success: true,
-      flight,
-      seats,
-    };
-  },
-});
+    },
+  });
+}
 
-export const bookFlightTool = tool({
-  description:
-    "Mengonfirmasi reservasi tiket penerbangan dengan ID penerbangan, nomor kursi terpilih, dan nama lengkap penumpang",
-  inputSchema: bookFlightSchema,
-  execute: async ({ flightId, seatId, passengerName }) => {
-    const booking = createBooking({ flightId, seatId, passengerName });
-    if (!booking) {
+function buildSelectFlightTool(t: Dictionary) {
+  return tool({
+    description: t.tools.selectFlightDesc,
+    inputSchema: selectFlightSchema,
+    execute: async ({ flightId }) => {
+      const flight = getFlightById(flightId);
+      if (!flightId) {
+        return {
+          success: false,
+          error: t.tools.flightNotFound(flightId),
+        };
+      }
+      const seats = generateSeatsForFlight(flightId);
       return {
-        success: false,
-        error: `Gagal memproses pemesanan untuk penerbangan '${flightId}'.`,
+        success: true,
+        flight,
+        seats,
       };
-    }
-    return {
-      success: true,
-      booking,
-    };
-  },
-});
+    },
+  });
+}
 
-export const travelTools = {
-  searchFlights: searchFlightsTool,
-  selectFlight: selectFlightTool,
-  bookFlight: bookFlightTool,
-};
+function buildBookFlightTool(t: Dictionary) {
+  return tool({
+    description: t.tools.bookFlightDesc,
+    inputSchema: bookFlightSchema,
+    execute: async ({ flightId, seatId, passengerName }) => {
+      const booking = createBooking({ flightId, seatId, passengerName });
+      if (!booking) {
+        return {
+          success: false,
+          error: t.tools.bookingFailed(flightId),
+        };
+      }
+
+      return {
+        success: true,
+        booking,
+      };
+    },
+  });
+}
+
+export function createTravelTools(locale: Locale = DEFAULT_LOCALE) {
+  const t = getDictionary(isLocale(locale) ? locale : DEFAULT_LOCALE);
+  return {
+    searchFlights: buildSearchFlightsTool(t),
+    selectFlight: buildSelectFlightTool(t),
+    bookFlight: buildBookFlightTool(t),
+  };
+}
+
+const defaultDict = getDictionary(DEFAULT_LOCALE);
+
+export const searchFlightsTool = buildSelectFlightTool(defaultDict);
+export const selectFlightTool = buildSelectFlightTool(defaultDict);
+export const bookFlightTool = buildBookFlightTool(defaultDict);
+
+export const travelTools = createTravelTools(DEFAULT_LOCALE);

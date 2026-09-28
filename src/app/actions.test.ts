@@ -27,7 +27,7 @@ describe("Phase 3 - Server Actions (processBookingAction)", () => {
     });
 
     expect(result.success).toBe(false);
-    expect(result.error).toContain("tidak ditemukan");
+    expect(result.error).toContain("was not found");
   });
 
   it("harus mengembalikan error jika parameter wajib tidak diisi", async () => {
@@ -38,6 +38,6 @@ describe("Phase 3 - Server Actions (processBookingAction)", () => {
     });
 
     expect(result.success).toBe(false);
-    expect(result.error).toContain("Data reservasi tidak lengkap");
+    expect(result.error).toContain("Incomplete reservation data");
   });
 });
