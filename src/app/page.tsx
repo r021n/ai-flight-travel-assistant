@@ -126,6 +126,7 @@ export default function Home() {
         seatId,
         passengerName,
         paymentMethod: "QRIS / Instant Bank Transfer",
+        locale,
       });
 
       if (res.success && res.booking) {

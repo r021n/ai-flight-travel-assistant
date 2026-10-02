@@ -43,7 +43,7 @@ export const id: Dictionary = {
     somethingWentWrong: "Terjadi kesalahan",
     aiResponseError: "Gagal memuat respon AI",
     aiResponseFallback:
-      "Pastikan API Key GOOGLE_GENERATIVE_AI_API_KEY telah diisi di .env.local",
+      "Pastikan API Key OPENROUTER_API_KEY telah diisi di .env.local",
     aiTyping: "AI sedang merespon",
     inputPlaceholder: "Cari tiket Jakarta ke Bali besok...",
     send: "Kirim",
@@ -114,7 +114,7 @@ export const id: Dictionary = {
     invalidPayload:
       "Payload tidak valid: messages diperlukan dan harus berupa array.",
     missingApiKey:
-      "GOOGLE_GENERATIVE_AI_API_KEY belum dikonfigurasi. Silakan isi API Key Anda di file .env.local dari Google AI Studio.",
+      "OPENROUTER_API_KEY belum dikonfigurasi. Silakan isi API Key Anda di file .env.local dari openrouter.ai.",
     internalError:
       "Terjadi kesalahan internal pada server saat memproses chat.",
   },

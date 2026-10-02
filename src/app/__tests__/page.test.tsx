@@ -101,7 +101,7 @@ describe("Phase 3 - Home Page (Generative UI Chat Interface)", () => {
 
     expect(screen.getByTestId("flight-skeleton")).toBeInTheDocument();
     expect(
-      screen.getByText(/Mencari jadwal penerbangan terbaik/i),
+      screen.getByText(/Searching for the best flight schedules/i),
     ).toBeInTheDocument();
   });
 
@@ -162,7 +162,7 @@ describe("Phase 3 - Home Page (Generative UI Chat Interface)", () => {
     render(<Home />);
 
     expect(screen.getByTestId("seat-picker")).toBeInTheDocument();
-    expect(screen.getByText(/Pilih Kursi - GA-401/i)).toBeInTheDocument();
+    expect(screen.getByText(/Select Seat.*GA-401/i)).toBeInTheDocument();
   });
 
   it("harus merender BookingReceipt saat tool bookFlight berstatus output-available", () => {
@@ -215,7 +215,7 @@ describe("Phase 3 - Home Page (Generative UI Chat Interface)", () => {
     });
 
     expect(
-      screen.getByText(/Transaksi Dikonfirmasi melalui Next.js Server Action/i),
+      screen.getByText(/Transaction confirmed via Next.js Server Action/i),
     ).toBeInTheDocument();
   });
 });

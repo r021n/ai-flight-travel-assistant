@@ -41,7 +41,7 @@ export const en = {
     somethingWentWrong: "Something went wrong",
     aiResponseError: "Failed to load AI response",
     aiResponseFallback:
-      "Make sure the GOOGLE_GENERATIVE_AI_API_KEY is filled in .env.local",
+      "Make sure the OPENROUTER_API_KEY is filled in .env.local",
     aiTyping: "AI is responding",
     inputPlaceholder: "Search for Jakarta to Bali tickets tomorrow...",
     send: "Send",
@@ -111,7 +111,7 @@ export const en = {
     invalidPayload:
       "Invalid payload: messages is required and must be an array.",
     missingApiKey:
-      "GOOGLE_GENERATIVE_AI_API_KEY is not configured. Please set your API Key in the .env.local file from Google AI Studio.",
+      "OPENROUTER_API_KEY is not configured. Please set your API Key in the .env.local file from openrouter.ai.",
     internalError: "An internal server error occurred while processing chat.",
   },
   tools: {
