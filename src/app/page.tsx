@@ -6,6 +6,7 @@ import { DefaultChatTransport } from "ai";
 import { FlightListCard } from "@/components/flight-list";
 import { SeatPicker } from "@/components/seat-picker";
 import { BookingReceipt } from "@/components/booking-receipt";
+import { MarkdownText } from "@/components/markdown-text";
 import {
   FlightCardSkeleton,
   SeatPickerSkeleton,
@@ -269,7 +270,11 @@ export default function Home() {
                           key={index}
                           className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${isUser ? "bg-primary text-primary-foreground rounded-br-md" : "bg-card border border-border/70 text-card-foreground shadow-xs rounded-bl-md"}`}
                         >
-                          <p className="whitespace-pre-wrap">{part.text}</p>
+                          {isUser ? (
+                            <p className="whitespace-pre-wrap">{part.text}</p>
+                          ) : (
+                            <MarkdownText text={part.text} />
+                          )}
                         </div>
                       );
                     }
