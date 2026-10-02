@@ -40,7 +40,7 @@ function buildSelectFlightTool(t: Dictionary) {
     inputSchema: selectFlightSchema,
     execute: async ({ flightId }) => {
       const flight = getFlightById(flightId);
-      if (!flightId) {
+      if (!flight) {
         return {
           success: false,
           error: t.tools.flightNotFound(flightId),
@@ -88,7 +88,7 @@ export function createTravelTools(locale: Locale = DEFAULT_LOCALE) {
 
 const defaultDict = getDictionary(DEFAULT_LOCALE);
 
-export const searchFlightsTool = buildSelectFlightTool(defaultDict);
+export const searchFlightsTool = buildSearchFlightsTool(defaultDict);
 export const selectFlightTool = buildSelectFlightTool(defaultDict);
 export const bookFlightTool = buildBookFlightTool(defaultDict);
 

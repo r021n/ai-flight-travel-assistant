@@ -1,4 +1,3 @@
-import { google } from "@ai-sdk/google";
 import {
   streamText,
   isStepCount,
@@ -6,6 +5,7 @@ import {
   toUIMessageStream,
   convertToModelMessages,
 } from "ai";
+import { createChatModel, getOpenRouterApiKey } from "@/lib/llm";
 import { createTravelTools } from "@/lib/tools";
 import { getDictionary } from "@/i18n/dictionaries";
 import { getLocaleFromRequest } from "@/i18n/helpers";
@@ -81,8 +81,8 @@ export async function POST(req: Request) {
       );
     }
 
-    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
-    if (!apiKey || apiKey === "your-google-ai-studio-api-key-here") {
+    const apiKey = getOpenRouterApiKey();
+    if (!apiKey) {
       return new Response(
         JSON.stringify({
           error: t.api.missingApiKey,
@@ -96,7 +96,7 @@ export async function POST(req: Request) {
     );
 
     const result = streamText({
-      model: google("gemma-4-31b-it"),
+      model: createChatModel(apiKey),
       instructions: t.ai.systemPrompt,
       messages: modelMessages,
       tools: createTravelTools(locale),
